@@ -97,12 +97,43 @@ console.log('formatPrice(10)', formatPrice(10));
 
 const prices = [23, 45, 9.34]
 
+const price = 29.99
+
 prices.forEach(price => {
   console.log(formatPrice(price))
 })
 
+// regular function as callback
+// prices.forEach(function(price) {
+//   console.log(formatPrice(price))
+// })
+
+const book = {
+  id: 1,
+  title: 'Eloquent JavaScript: A Modern Introduction to Programming',
+  author: 'Marjin Haverbeke',
+  price: 10.00,
+  reviews: [{ userID: 1, content: 'Good book, but not great for new coders' }],
+  inventory: 10,
+  imageUrl: 'https://images-na.ssl-images-amazon.com/images/I/51IKycqTPUL._SX218_BO1,204,203,200_QL40_FMwebp_.jpg'
+};
 // ✅ create a blurb() function that accepts a book as an argument and logs a message in the following format:
 // 'Eloquent JavaScript: A Modern Introduction to Programming by Marjin Haverbeke is on sale for $10.00'
+
+function blurb(book) {
+  // book.title // => book['title']
+  // const key = 'title';
+  // book.key // => book['key']
+  // book[key] // => book['title'] // key is evaluated as JS and becomes 'title'
+  const title = book.title; // book['title']
+  const author = book.author; // 
+  const price = formatPrice(book.price);
+  return `${title} by ${author} is on sale for ${price}`
+}
+
+console.log('blurb(book)', blurb(book));
+
+
 
 
 
@@ -136,6 +167,18 @@ prices.forEach(price => {
 
 // ✅ Create an array of strings from the inventory in the following format:
 // 'Eloquent JavaScript: A Modern Introduction to Programming by Marjin Haverbeke is on sale for $10.00'
+const blurbs = inventory.map(book => blurb(book))
 
+console.log('blurbs', blurbs);
 
 // 💡 When do I use forEach vs map?
+// forEach when I just want to run a function for every element in the array
+// map when I want to build a new array based on an existing one
+
+function myMap(array, cb) {
+  const newArray = [];
+  for (let i = 0; i < array.length; i++) {
+    newArray.push(cb(array[i]))
+  }
+  return newArray;
+}
