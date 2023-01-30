@@ -74,14 +74,32 @@ const inventory = [
 
 // Start here!
 
+function helloWorld() {
+  console.log("Hello, world!");
+  return "Hello, world!";
+}
 
+// formatPrice(10) => '$10.00'
+// function formatPrice(price) {
+//   return '$' + Number.parseFloat(price).toFixed(2)
+// }
+
+// console.log('formatPrice(10)', formatPrice('10'));
 
 
 // 💡 Arrow functions vs regular functions
 
 // ✅ create an arrow function version of the formatPrice function
+const formatPrice = (price) => '$' + Number.parseFloat(price).toFixed(2)
 
 
+console.log('formatPrice(10)', formatPrice(10));
+
+const prices = [23, 45, 9.34]
+
+prices.forEach(price => {
+  console.log(formatPrice(price))
+})
 
 // ✅ create a blurb() function that accepts a book as an argument and logs a message in the following format:
 // 'Eloquent JavaScript: A Modern Introduction to Programming by Marjin Haverbeke is on sale for $10.00'
