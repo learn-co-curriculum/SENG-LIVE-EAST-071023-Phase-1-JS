@@ -100,6 +100,8 @@ const prices = [23, 45, 9.34]
 const price = 29.99
 
 prices.forEach(price => {
+  // can't access price defined in global scope here
+  // beause the callback parameter name is price also
   console.log(formatPrice(price))
 })
 
@@ -140,11 +142,19 @@ console.log('blurb(book)', blurb(book));
 // 💡 Difference between Block scope, Function scope, and Global scope
 
 // ✅ create a variable `highestPricedBook`
-
+let highestPricedBook = inventory[0];
 
 
 // ✅ create a function `findHighestPricedBook` that finds that book and returns it
-
+function findHighestPricedBook(inventory) {
+  for (let i = 1; i < inventory.length; i++) {
+    const book = inventory[i];
+    if (highestPricedBook.price < book.price) {
+      highestPricedBook = book;
+    }
+  }
+  return highestPricedBook;
+}
 
 
 // After Break
@@ -158,11 +168,19 @@ console.log('blurb(book)', blurb(book));
 
 
 // ✅ Create an array of the prices of all of the books
+const bookPrices = inventory.map(book => book.price);
 
+console.log('bookPrices: ', bookPrices)
 
 
 // ✅ Create an array of simplified book objects
-
+const simplifiedBooks = inventory.map(book => {
+  return {
+    title: book.title,
+    author: book.author,
+    price: book.price
+  }
+})
 
 
 // ✅ Create an array of strings from the inventory in the following format:
@@ -182,3 +200,9 @@ function myMap(array, cb) {
   }
   return newArray;
 }
+
+const squareMe = x => x * x;
+
+const squares = myMap([1, 2, 3, 4], squareMe);
+
+console.log('squares', squares);
