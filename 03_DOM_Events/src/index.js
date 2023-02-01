@@ -1,6 +1,6 @@
 const bookList = document.querySelector('#book-list');
 const bookForm = document.querySelector('#book-form');
-const toggleBookForm = document.querySelector('#toggleForm');
+const toggleBookFormButton = document.querySelector('#toggleForm');
 
 function formatPrice(price) {
   return '$' + Number.parseFloat(price).toFixed(2);
@@ -127,12 +127,22 @@ bookForm.addEventListener('submit', (e) => {
 
 // hide and show the book form upon clicking the toggleBookForm button
 
-toggleBookForm.addEventListener('click', (e) => {
+toggleBookFormButton.addEventListener('click', toggleBookForm)
+
+function toggleBookForm() {
   const isHidden = bookForm.classList.toggle("collapsed");
   if (isHidden) {
-    e.target.textContent = "New Book";
+    toggleBookFormButton.textContent = "New Book";
   } else {
-    e.target.textContent = "Hide Book Form";
+    toggleBookFormButton.textContent = "Hide Book Form";
+  }
+}
+
+// If we want to be able to hide the form on typing escape
+window.addEventListener('keydown', (e) => {
+  const isVisible = !bookForm.classList.contains("collapsed");
+  if (isVisible && e.key === 'Escape') {
+    toggleBookForm();
   }
 })
 
