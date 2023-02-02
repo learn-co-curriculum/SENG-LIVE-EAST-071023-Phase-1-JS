@@ -39,6 +39,12 @@ main {
   justify-content: space-around;
 }
 
+.error {
+  text-align: center;
+  background-color: lightcoral;
+  padding: 10px 0;
+}
+
 .list ul {
   margin: 10px;
   padding: 10px;

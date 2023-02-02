@@ -14,7 +14,7 @@ function renderHeader(bookStore) {
 }
 
 function renderFooter(bookStore) {
-  document.querySelector('#store').textContent = bookStore.store;
+  document.querySelector('#location').textContent = bookStore.location;
   document.querySelector('#address').textContent = bookStore.address;
   document.querySelector('#number').textContent = bookStore.number;
   document.querySelector('#hours').textContent = bookStore.hours;
@@ -86,6 +86,17 @@ function toggleBookForm() {
   }
 }
 
+function renderError(err) {
+  const errorDiv = document.createElement('div');
+  if (err.message === "Failed to Fetch") {
+    errorDiv.textContent = "Whoops! Looks like you forgot to start your JSON server"
+  } else {
+    errorDiv.textContent = err;
+  }
+  errorDiv.classList.add('error');
+  document.querySelector('main').prepend(errorDiv);
+}
+
 ////////////////////////////////////////////////////////////////
 // Event Listeners/Handlers (Behavior => Data => Display)
 ////////////////////////////////////////////////////////////////
@@ -127,9 +138,45 @@ bookForm.addEventListener('submit', (e) => {
 // call render functions to populate the DOM
 ////////////////////////////////////////////
 
-renderHeader(bookStore)
-renderFooter(bookStore)
-bookStore.inventory.forEach(renderBook)
+// renderHeader(bookStore)
+// renderFooter(bookStore)
+// bookStore.inventory.forEach(renderBook)
 
 
+//////////////////////////////////////////////////////////////////
+// Communicating with the Server (via Fetch! -> Then updating DOM)
+//////////////////////////////////////////////////////////////////
 
+// debugging example to see what happens at each phase
+// const request = fetch('http://localhost:3000/books');
+// console.log(request);
+// request
+//   .then((response) => {
+//     console.log(response);
+//     return response.json()
+//   })
+//   .then((data) => console.log(data));
+
+fetch("http://localhost:3000/books")
+  .then(res => res.json())
+  .then(books => {
+    books.forEach(renderBook)
+  })
+  .catch(error => {
+    console.error(error);
+    renderError(error);
+  })
+
+fetch("http://localhost:3000/stores/1")
+  .then(res => {
+    if (res.ok) {
+      return res.json()
+    } else {
+      throw new Error(res.statusText);
+    }
+  })
+  .then(bookStore => {
+    renderHeader(bookStore)
+    renderFooter(bookStore)
+  })
+  .catch(renderError);

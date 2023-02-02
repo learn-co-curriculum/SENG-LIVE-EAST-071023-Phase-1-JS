@@ -5,7 +5,7 @@
       "location": "Seattle",
       "address": "333 st ne Seattle wa 99999",
       "number": 9999999999,
-      "name": "Easley's Technical Books",
+      "name": "Easley's Technical Books!!!",
       "hours": "Monday - Friday 9am - 6pm"
     }, 
     {
@@ -30,14 +30,14 @@
       "id": 1,
       "title": "Eloquent JavaScript: A Modern Introduction to Programming",
       "author": "Marjin Haverbeke",
-      "price": 10.00,
+      "price": 12.50,
       "reviews": [
         {
           "userID": 1,
           "content": "Good book, but not great for new coders"
         }
       ],
-      "inventory": 10,
+      "inventory": 20,
       "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/51IKycqTPUL._SX218_BO1,204,203,200_QL40_FMwebp_.jpg"
     },
     {
