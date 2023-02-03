@@ -3,6 +3,7 @@ const bookForm = document.querySelector('#book-form');
 const storeForm = document.querySelector('#store-form');
 const toggleBookFormButton = document.querySelector('#toggleBookForm');
 const toggleStoreFormButton = document.querySelector('#toggleStoreForm');
+const storeSelector = document.querySelector('#store-selector');
 
 //////////////////////////////////////////////////////////
 // Fetch Data & Call render functions to populate the DOM
@@ -43,8 +44,6 @@ function renderFooter(bookStore) {
 
 // adds options to a select tag that allows swapping between different stores
 function renderStoreSelectionOptions(stores) {
-  // target the select tag
-  const storeSelector = document.querySelector('#store-selector');
   // clear out any currently visible options
   storeSelector.innerHTML = "";
   // add an option to the select tag for each store
@@ -59,7 +58,7 @@ function renderStoreSelectionOptions(stores) {
   })
 }
 
-const storeSelector = document.querySelector('#store-selector');
+
 
 function addSelectOptionForStore(store) {
   const option = document.createElement('option');
@@ -68,6 +67,7 @@ function addSelectOptionForStore(store) {
   // the options textContent will be what the user sees when choosing an option
   option.textContent = store.name;
   storeSelector.append(option);
+  return option;
 }
 
 // function: renderBook(book)
@@ -123,6 +123,7 @@ function renderBook(book) {
   li.append(btn);
 
   bookList.append(li);
+  return li;
 }
 
 function renderError(error) {
@@ -225,14 +226,117 @@ bookForm.addEventListener('submit', (e) => {
     imageUrl: e.target.imageUrl.value
   }
   // pass the info as an argument to renderBook for display!
-  renderBook(book);
   // 1. Add the ability to perist the book to the database when the form is submitted. When this works, we should still see the book that is added to the DOM on submission when we refresh the page.
 
+  // optimistic rendering approach
+  const li = renderBook(book);
+  li.classList.add('loading');
+  fetch("http://localhost:3000/books", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(book)
+  })
+    .then(response => {
+      if (response.ok) {
+        li.classList.remove('loading');
+      } 
+    })
+    .catch(error => {
+      li.remove();
+      renderError("Something went wrong. We weren't able to save that book")
+    })
+
+  // pessimistic rendering approach
+  // fetch("http://localhost:3000/books", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json"
+  //   },
+  //   body: JSON.stringify(book)
+  // })
+  //   .then(response => {
+  //     if (response.ok) {
+  //       return response.json()
+  //     } else {
+  //       throw (response.statusText);
+  //     }
+  //   })
+  //   .then(book => renderBook(book)) // DOM update happens in async callback AFTER request is successful
+  //   .catch(renderError);
+
+  // using our helper function with the boilerplate already written
+  // postJSON("http://localhost:3000/books", book)
+  //   .then(renderBook)
+  //   .catch(renderError);
   e.target.reset();
+  toggleBookForm();
+})
+
+fillIn(bookForm, {
+  title: 'Designing Data-Intensive Applications',
+  author: 'Martin Kleppmann',
+  price: '22.20',
+  imageUrl: 'https://m.media-amazon.com/images/I/51ZSpMl1-LL._SX379_BO1,204,203,200_.jpg',
+  inventory: '1'
 })
 
 // 2. Hook up the new Store form so it that it works to add a new store to our database and also to the DOM (as an option within the select tag)
 
+storeForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  // store will look like this in my database
+  // {
+  //   "id": 3,
+  //   "name": "Tech BooksRus",
+  //   "location": "Los Angeles",
+  //   "address": "2525 drive Los Angeles CA 90002",
+  //   "number": 5554443333,
+  //   "hours": "Thursday - Saturday 11am - 7pm"
+  // }
+  const store = {
+    name: e.target.name.value,
+    location: e.target.location.value,
+    address: e.target.address.value,
+    number: e.target.number.value,
+    hours: e.target.hours.value,
+  }
+
+  // optimistic version
+  //   const option = addSelectOptionForStore(store)
+  //   fetch("http://localhost:3000/stores", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify(store)
+  //   })
+  //     .then(response => response.json())
+  //     .then(newStore => {
+  //       option.value = newStore.id; // add missing value to the option tag, so that the fetch works when the option is selected
+  //     })
+ 
+ 
+  
+  // pessimistic rendering 
+  fetch("http://localhost:3000/stores", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(store)
+  })
+    .then(response => response.json())
+    .then(newStore => {
+      addSelectOptionForStore(newStore); // we'll already have the id in the store when we do the DOM update
+    })
+  
+  e.target.reset();
+  toggleStoreForm();
+  
+});
 // we're filling in the storeForm with some data
 // for a new store programatically so we don't 
 // have to fill in the form every time we test

@@ -2,27 +2,43 @@
   "stores": [
     {
       "id": 1,
+      "name": "Easley's Technical Books",
       "location": "Seattle",
       "address": "333 st ne Seattle wa 99999",
-      "number": 9999999999,
-      "name": "Easley's Technical Books",
+      "number": "9999999999",
       "hours": "Monday - Friday 9am - 6pm"
     },
     {
       "id": 2,
+      "name": "Coding Books and more!",
       "location": "New York",
       "address": "555 pl sw NY 10099",
-      "number": 1110009999,
-      "name": "Coding Books and more!",
+      "number": "1110009999",
       "hours": "Monday - Friday 10am - 9pm"
     },
     {
       "id": 3,
+      "name": "Tech BooksRus",
       "location": "Los Angeles",
       "address": "2525 drive Los Angeles CA 90002",
-      "number": 5554443333,
-      "name": "Tech BooksRus",
+      "number": "5554443333",
       "hours": "Thursday - Saturday 11am - 7pm"
+    },
+    {
+      "name": "BooksRUs",
+      "location": "LaLaLand",
+      "address": "555 Shangri-La",
+      "number": "555-555-5555",
+      "hours": "Monday - Friday 9am - 6pm",
+      "id": 4
+    },
+    {
+      "name": "BooksRUs",
+      "location": "LaLaLand",
+      "address": "555 Shangri-La",
+      "number": "555-555-5555",
+      "hours": "Monday - Friday 9am - 6pm",
+      "id": 5
     }
   ],
   "books": [
@@ -135,6 +151,24 @@
       ],
       "inventory": 20,
       "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/41oYsXjLvZL._SY344_BO1,204,203,200_.jpg"
+    },
+    {
+      "title": "Designing Data-Intensive Applications",
+      "author": "Martin Kleppmann",
+      "price": 22.2,
+      "reviews": [],
+      "inventory": 1,
+      "imageUrl": "https://m.media-amazon.com/images/I/51ZSpMl1-LL._SX379_BO1,204,203,200_.jpg",
+      "id": 8
+    },
+    {
+      "title": "Designing Data-Intensive Applications",
+      "author": "Martin Kleppmann",
+      "price": 22.2,
+      "reviews": [],
+      "inventory": 1,
+      "imageUrl": "https://m.media-amazon.com/images/I/51ZSpMl1-LL._SX379_BO1,204,203,200_.jpg",
+      "id": 9
     }
   ]
 }
