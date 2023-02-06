@@ -4,6 +4,10 @@
   overflow: hidden;
 }
 
+.loading {
+  opacity: 0.5;
+}
+
 header {
   background-image: url("assets/books.png");
   height: 10%;

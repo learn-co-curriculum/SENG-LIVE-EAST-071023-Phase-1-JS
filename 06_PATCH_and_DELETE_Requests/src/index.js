@@ -4,6 +4,7 @@ const storeForm = document.querySelector('#store-form');
 const toggleBookFormButton = document.querySelector('#toggleBookForm');
 const toggleStoreFormButton = document.querySelector('#toggleStoreForm');
 const editStoreButton = document.querySelector('#edit-store');
+const storeSelector = document.querySelector('#store-selector');
 let storeEditMode = false;
 
 //////////////////////////////////////////////////////////
@@ -36,15 +37,14 @@ function renderHeader(store){
 }
 
 function renderFooter(bookStore) {
+  document.querySelector('#location').textContent = bookStore.location;
   document.querySelector('#address').textContent = bookStore.address;
   document.querySelector('#number').textContent = bookStore.number;
-  document.querySelector('#store').textContent = bookStore.location;
+  document.querySelector('#hours').textContent = bookStore.hours;
 }
 
 // adds options to a select tag that allows swapping between different stores
 function renderStoreSelectionOptions(stores) {
-  // target the select tag
-  const storeSelector = document.querySelector('#store-selector');
   // clear out any currently visible options
   storeSelector.innerHTML = "";
   // add an option to the select tag for each store
@@ -58,8 +58,6 @@ function renderStoreSelectionOptions(stores) {
       })
   })
 }
-
-const storeSelector = document.querySelector('#store-selector');
 
 function addSelectOptionForStore(store) {
   const option = document.createElement('option');
@@ -103,16 +101,38 @@ function renderBook(book) {
   inventoryInput.value = book.inventory;
   inventoryInput.min = 0;
   li.append(inventoryInput);
+
+  inventoryInput.addEventListener('change', (e) => {
+    console.log(e.target.value);
+    // optimistic approach
+    // const newInventoryCount = parseInt(e.target.value);
+    // fetch(`http://localhost:3000/books/${book.id}`, {
+    //   method: "PATCH",
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify({inventory: newInventoryCount})
+    // })
+    // setInventoryText(pStock, newInventoryCount);
+
+    // pessimitic approach
+    const newInventoryCount = parseInt(e.target.value);
+    fetch(`http://localhost:3000/books/${book.id}`, {
+      method: "PATCH", 
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({inventory: newInventoryCount})
+    })
+      .then(response => response.json())
+      .then(book => {
+        setInventoryText(pStock, book.inventory);
+      })
+  })
   
   const pStock = document.createElement('p');
   pStock.className = "grey";
-  if (book.inventory === 0) {
-    pStock.textContent = "Out of stock";
-  } else if (book.inventory < 3) {
-    pStock.textContent = "Only a few left!";
-  } else {
-    pStock.textContent = "In stock"
-  }
+  setInventoryText(pStock, book.inventory);
   li.append(pStock);
   
   const img = document.createElement('img');
@@ -121,10 +141,49 @@ function renderBook(book) {
   li.append(img);
 
   const btn = document.createElement('button');
+  // if we had an external event listener and didn't have book in scope
+  btn.dataset.bookId = book.id; 
   btn.textContent = 'Delete';
 
   btn.addEventListener('click', (e) => {
-    li.remove();
+    // optimistic approach
+    // li.remove();
+    // fetch(`http://localhost:3000/books/${book.id}`, {
+    //   method: "DELETE"
+    // })
+    //   .then(res => {
+    //     if (!res.ok) {
+    //       bookList.append(li);
+    //     }
+    //   })
+    
+    // optimistic with more error handling for a more realistic situation in your own backend that you would build later on
+    // li.classList.add('loading'); 
+    // fetch(`http://localhost:3000/books/${book.id}`, {
+    //   method: "DELETE"
+    // })
+    //   .then(res => {
+    //     if (res.ok) {
+    //       li.remove();
+    //     } else {
+    //       li.classList.remove('loading');
+    //       renderError("Something went wrong–delete didn't persist.")
+    //     }
+    //   })
+    //   .catch(error => {
+    //     li.classList.remove('loading');
+    //     renderError(error)
+    //   })
+    // pessimistic approach
+    fetch(`http://localhost:3000/books/${book.id}`, {
+      method: "DELETE"
+    })
+      .then(res => {
+        if (res.ok) {
+          li.remove();
+        }
+      })
+      .catch(renderError);
   })
   li.append(btn);
 
@@ -156,6 +215,26 @@ function fillIn(form, data) {
     }
   }
 }
+
+function setInventoryText(paragraph, count) {
+  if (count === 0) {
+    paragraph.textContent = "Out of stock";
+  } else if (count < 3) {
+    paragraph.textContent = "Only a few left!";
+  } else {
+    paragraph.textContent = "In stock"
+  }
+}
+// external named event handler for our delete button click
+// alternative to adding the delete button click event handler 
+// inside of renderBook()
+// function handleDeleteClick(e) {
+//   const li = e.target.closest('.list-li'); 
+//   li.remove();
+//   fetch(`http://localhost:3000/books/${e.target.dataset.bookId}`, {
+//     method: "DELETE"
+//   })
+// }
 
 // New Function to populate the store form with a store's data to update 
 function populateStoreEditForm(store) {
@@ -202,6 +281,7 @@ bookForm.addEventListener('submit', (e) => {
 
 storeForm.addEventListener('submit', (e) => {
   e.preventDefault();
+  const storeId = e.target.dataset.storeId;
   const store = {
     name: e.target.name.value,
     address: e.target.address.value,
@@ -212,7 +292,35 @@ storeForm.addEventListener('submit', (e) => {
   
   if (storeEditMode) {
     // ✅ write code for updating the store here
+    console.log(store);
+    // pessimistic version
+    // fetch(`http://localhost:3000/stores/${storeId}`, {
+    //   method: "PATCH",
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify(store)
+    // })
+    //   .then(response => response.json())
+    //   .then(updatedStore => {
+    //     renderHeader(updatedStore);
+    //     renderFooter(updatedStore);
+    //     storeSelector.querySelector(`option[value="${updatedStore.id}"]`).textContent = updatedStore.name;
+    //   })
+    //   .catch(renderError);
     
+    // optimistic version
+    fetch(`http://localhost:3000/stores/${storeId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(store)
+    })
+    .catch(renderError)
+    renderHeader(store);
+    renderFooter(store);
+    storeSelector.querySelector(`option[value="${storeId}"]`).textContent = store.name;
   } else {
     postJSON("http://localhost:3000/stores", store)
     .then(addSelectOptionForStore)
@@ -224,6 +332,7 @@ storeForm.addEventListener('submit', (e) => {
 
 editStoreButton.addEventListener('click', (e) => {
   const selectedStoreId = document.querySelector('#store-selector').value;
+  storeForm.dataset.storeId = selectedStoreId;
   storeEditMode = true;
   getJSON(`http://localhost:3000/stores/${selectedStoreId}`)
     .then(populateStoreEditForm)
