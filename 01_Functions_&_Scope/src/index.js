@@ -1,5 +1,8 @@
 //Data 
-const inventory = [
+console.log( "I loaded the JS file! Yay!!! 😊" )
+
+
+const books = [
   {
     id: 1,
     title: 'Eloquent JavaScript: A Modern Introduction to Programming',
@@ -75,26 +78,51 @@ const inventory = [
 // Start here!
 
 
+// ✅ create a function formatPrice that displays the book price in the format '$00.00'
+
+// function formatPrice ( book ) {
+//   return `$${ book.price.toFixed( 2 ) }`
+// }
 
 
 // 💡 Arrow functions vs regular functions
 
 // ✅ create an arrow function version of the formatPrice function
 
+const formatPrice = ( book ) => `$${ book.price.toFixed( 2 ) }`
 
 
 // ✅ create a blurb() function that accepts a book as an argument and logs a message in the following format:
 // 'Eloquent JavaScript: A Modern Introduction to Programming by Marjin Haverbeke is on sale for $10.00'
 
+const blurb = ( book ) => `${ book.title } by ${ book.author } is on sale for ${ formatPrice( book ) }`
+
+// function blurb ( book ) {
+//   return `${ book.title } by ${ book.author } is on sale for ${ formatPrice( book ) }`
+// }
 
 
 // 💡 Difference between Block scope, Function scope, and Global scope
 
 // ✅ create a variable `highestPricedBook`
 
-
+let highestPricedBook
 
 // ✅ create a function `findHighestPricedBook` that finds that book and returns it
+
+const findHighestPricedBook = ( ) => {
+  highestPricedBook = books[0]
+  books.forEach( book => {
+    if ( book.price > highestPricedBook.price )
+      highestPricedBook = book
+  })
+  return highestPricedBook
+
+  // We can also use .sort on our array to order them from highest -> lowest price
+  // return books.sort( ( book1, book2 ) => book2.price - book1.price )[0]
+}
+console.log( "The highest price book is: ", findHighestPricedBook() )
+
 
 
 
@@ -110,14 +138,22 @@ const inventory = [
 
 // ✅ Create an array of the prices of all of the books
 
-
+// We can use .map here to make a new array with only the prices
+const bookPrices = books.map( book => book.price )
+console.log( "Array of book prices: ", bookPrices )
 
 // ✅ Create an array of simplified book objects
+
 
 
 
 // ✅ Create an array of strings from the inventory in the following format:
 // 'Eloquent JavaScript: A Modern Introduction to Programming by Marjin Haverbeke is on sale for $10.00'
 
+// We can use our earlier function to help with this one, as well as throw in a .map to make a new array
+const bookBlurbs = books.map( book => blurb( book ) )
+console.log( "Array of book blurbs: ", bookBlurbs )
 
 // 💡 When do I use forEach vs map?
+
+// Use .map when you want to make a new array with changes to the data. Use forEach when you just need to loop over. 👍
