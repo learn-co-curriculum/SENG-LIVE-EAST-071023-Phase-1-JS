@@ -76,6 +76,11 @@ main {
   font-weight: bold;
 }
 
+.list-li button:hover {
+  background-color: #b9a533;
+  color: rgb(222, 222, 222);
+}
+
 #form-wrapper {
   border-top: solid;
   border-bottom: solid;
