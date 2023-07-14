@@ -1,6 +1,46 @@
-const bookList = document.querySelector('#book-list');
-const bookForm = document.querySelector('#book-form');
-const toggleBookFormButton = document.querySelector('#toggleForm');
+const bookList = document.getElementById('book-list');
+const bookForm = document.getElementById('book-form');
+const toggleBookFormButton = document.getElementById('toggleForm');
+
+
+// Create variables to hold onto the URLs so we don't hardcode them in. This will make life easy for us in the future!!! 🤓
+const baseUrl = 'http://localhost:3001'
+const storesUrl = baseUrl + '/stores'
+const booksUrl = baseUrl + '/books'
+const turtlesUrl = baseUrl + '/turtles'
+
+// Write a function to fetch the books from our db.json file!!! 🙌
+const fetchBooks = () => {
+  fetch( booksUrl )
+  .then( response => response.json() )
+  .then( booksData => booksData.forEach( book => renderBook( book ) ) )
+}
+
+fetchBooks()
+
+// A function that will now fetch our store information!
+const fetchStores = () =>
+  fetch( storesUrl )
+  .then( r => r.json() )
+  .then( storesData => {
+
+    let index = 0
+    renderHeader( storesData[ index ] )
+    renderFooter( storesData[ index ] )
+    
+    // Using a setInterval to change the bookstore info every 5 seconds 😉
+    setInterval( ()=> {
+      if ( index >= storesData.length )
+        index = 0
+      index += 1
+      renderHeader( storesData[ index ] )
+      renderFooter( storesData[ index ] )
+    }, 5000 )
+  })
+
+fetchStores()
+
+
 
 function formatPrice(price) {
   return '$' + Number.parseFloat(price).toFixed(2);
@@ -10,14 +50,14 @@ function formatPrice(price) {
 // render functions (DOM Manipulation)
 //////////////////////////////////////
 function renderHeader(bookStore) {
-  document.querySelector('#store-name').textContent = bookStore.name;
+  document.getElementById('store-name').textContent = bookStore.name;
 }
 
 function renderFooter(bookStore) {
-  document.querySelector('#store').textContent = bookStore.store;
-  document.querySelector('#address').textContent = bookStore.address;
-  document.querySelector('#number').textContent = bookStore.number;
-  document.querySelector('#hours').textContent = bookStore.hours;
+  document.getElementById('location').textContent = bookStore.location;
+  document.getElementById('address').textContent = bookStore.address;
+  document.getElementById('number').textContent = bookStore.number;
+  document.getElementById('hours').textContent = bookStore.hours;
 }
 
 // function: renderBook(book)
@@ -73,7 +113,7 @@ function renderBook(book) {
   })
 
 
-  document.querySelector('#book-list').append(li);
+  document.getElementById('book-list').append(li);
 }
 
 
@@ -127,9 +167,9 @@ bookForm.addEventListener('submit', (e) => {
 // call render functions to populate the DOM
 ////////////////////////////////////////////
 
-renderHeader(bookStore)
-renderFooter(bookStore)
-bookStore.inventory.forEach(renderBook)
+// renderHeader(bookStore)
+// renderFooter(bookStore)
+// bookStore.inventory.forEach(renderBook)
 
 
 
