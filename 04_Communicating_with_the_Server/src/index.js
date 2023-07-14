@@ -32,9 +32,9 @@ const fetchStores = () =>
     setInterval( ()=> {
       if ( index >= storesData.length )
         index = 0
-      index += 1
       renderHeader( storesData[ index ] )
       renderFooter( storesData[ index ] )
+      index += 1
     }, 5000 )
   })
 
