@@ -1,8 +1,14 @@
-const bookList = document.querySelector('#book-list');
-const bookForm = document.querySelector('#book-form');
-const storeForm = document.querySelector('#store-form');
-const toggleBookFormButton = document.querySelector('#toggleBookForm');
-const toggleStoreFormButton = document.querySelector('#toggleStoreForm');
+const bookList = document.getElementById('book-list');
+const bookForm = document.getElementById('book-form');
+const storeForm = document.getElementById('store-form');
+const toggleBookFormButton = document.getElementById('toggleBookForm');
+const toggleStoreFormButton = document.getElementById('toggleStoreForm');
+
+const baseUrl = 'http://localhost:3000'
+const booksUrl = baseUrl + '/books'
+const storesUrl = baseUrl + '/stores'
+
+
 
 //////////////////////////////////////////////////////////
 // Fetch Data & Call render functions to populate the DOM
@@ -31,20 +37,20 @@ getJSON("http://localhost:3000/books")
 // render functions (for DOM Manipulation)
 //////////////////////////////////////////
 function renderHeader(bookStore) {
-  document.querySelector('#store-name').textContent = bookStore.name;
+  document.getElementById('store-name').textContent = bookStore.name;
 }
 
 function renderFooter(bookStore) {
-  document.querySelector('#location').textContent = bookStore.location;
-  document.querySelector('#address').textContent = bookStore.address;
-  document.querySelector('#number').textContent = bookStore.number;
-  document.querySelector('#hours').textContent = bookStore.hours;
+  document.getElementById('location').textContent = bookStore.location;
+  document.getElementById('address').textContent = bookStore.address;
+  document.getElementById('number').textContent = bookStore.number;
+  document.getElementById('hours').textContent = bookStore.hours;
 }
 
 // adds options to a select tag that allows swapping between different stores
 function renderStoreSelectionOptions(stores) {
   // target the select tag
-  const storeSelector = document.querySelector('#store-selector');
+  const storeSelector = document.getElementById('store-selector');
   // clear out any currently visible options
   storeSelector.innerHTML = "";
   // add an option to the select tag for each store
@@ -59,7 +65,7 @@ function renderStoreSelectionOptions(stores) {
   })
 }
 
-const storeSelector = document.querySelector('#store-selector');
+const storeSelector = document.getElementById('store-selector');
 
 function addSelectOptionForStore(store) {
   const option = document.createElement('option');
@@ -126,7 +132,7 @@ function renderBook(book) {
 }
 
 function renderError(error) {
-  const main = document.querySelector('main');
+  const main = document.getElementById('ain');
   const errorDiv = document.createElement('div');
   errorDiv.className = 'error';
   if (error.message === "Failed to fetch") {
@@ -225,13 +231,56 @@ bookForm.addEventListener('submit', (e) => {
     imageUrl: e.target.imageUrl.value
   }
   // pass the info as an argument to renderBook for display!
-  renderBook(book);
+  // renderBook(book);
   // 1. Add the ability to perist the book to the database when the form is submitted. When this works, we should still see the book that is added to the DOM on submission when we refresh the page.
+  postBook( book )
 
   e.target.reset();
 })
 
 // 2. Hook up the new Store form so it that it works to add a new store to our database and also to the DOM (as an option within the select tag)
+const postBook = book => {
+  
+  // fetch( booksUrl, {
+  //   method: 'POST',
+  //   headers: {
+  //     'content-type': 'application/json',
+  //     'accepts':  'application/json'
+  //   },
+  //   body: JSON.stringify( book )
+  // })
+
+  const postRequest = {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'accepts':  'application/json'
+    },
+    body: JSON.stringify( book )
+  }
+
+  fetch( booksUrl, postRequest )
+  // .then( r => r.json() )
+  // .then( newBookData => renderBook( newBookData ) )
+  // .then( renderBook )
+  // .then( function( newBookData ) {
+  //   renderBook( newBookData )
+  // })
+  .then( r => {
+    if ( r.ok )
+      return r.json()
+    else
+      console.log( r )
+  })
+  .then( renderBook )
+}
+
+
+
+
+
+
+
 
 // we're filling in the storeForm with some data
 // for a new store programatically so we don't 
