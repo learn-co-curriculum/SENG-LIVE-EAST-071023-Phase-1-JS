@@ -135,6 +135,51 @@
       ],
       "inventory": 20,
       "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/41oYsXjLvZL._SY344_BO1,204,203,200_.jpg"
+    },
+    {
+      "title": "Goobly Goop",
+      "author": "Princetonj",
+      "price": 0,
+      "reviews": [],
+      "inventory": 10000,
+      "imageUrl": "ffdjsfjfd;fja;fj",
+      "id": 8
+    },
+    {
+      "title": "Goobly Goop Part 2",
+      "author": "Princeton",
+      "price": 1,
+      "reviews": [],
+      "inventory": 20000,
+      "imageUrl": "fdfdsfjsdlkjal;fdjk;",
+      "id": 9
+    },
+    {
+      "title": "Goobly Goop  3",
+      "author": "Princeton & Thomas",
+      "price": 2,
+      "reviews": [],
+      "inventory": 25000,
+      "imageUrl": "fdjklfdajsdjfs;",
+      "id": 10
+    },
+    {
+      "title": "jdfkladsjfa;lsdkfjsdkl;fdsjak",
+      "author": "fdsjaf;lsdjf;laksfjfdas",
+      "price": 98098,
+      "reviews": [],
+      "inventory": null,
+      "imageUrl": "fjdsdalfjsl;kdfaj;",
+      "id": 11
+    },
+    {
+      "title": "gjjdfdjlkdasjf;asdfjsa;j",
+      "author": "fgjdslkfjdl;gfdajfl;dfsj",
+      "price": 9808,
+      "reviews": [],
+      "inventory": null,
+      "imageUrl": "fjdlkfasdjfl;sjf",
+      "id": 12
     }
   ]
 }
