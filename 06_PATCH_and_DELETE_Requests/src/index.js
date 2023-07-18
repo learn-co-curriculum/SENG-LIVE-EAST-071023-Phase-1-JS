@@ -1,10 +1,17 @@
-const bookList = document.querySelector('#book-list');
-const bookForm = document.querySelector('#book-form');
-const storeForm = document.querySelector('#store-form');
-const toggleBookFormButton = document.querySelector('#toggleBookForm');
-const toggleStoreFormButton = document.querySelector('#toggleStoreForm');
-const editStoreButton = document.querySelector('#edit-store');
+const bookList = document.getElementById('book-list');
+const bookForm = document.getElementById('book-form');
+const storeForm = document.getElementById('store-form');
+const toggleBookFormButton = document.getElementById('toggleBookForm');
+const toggleStoreFormButton = document.getElementById('toggleStoreForm');
+const editStoreButton = document.getElementById('edit-store');
 let storeEditMode = false;
+
+const baseUrl = 'http://localhost:3000'
+const booksUrl = baseUrl + '/books'
+const storesUrl = baseUrl + '/stores'
+
+
+
 
 //////////////////////////////////////////////////////////
 // Fetch Data & Call render functions to populate the DOM
@@ -32,19 +39,19 @@ getJSON("http://localhost:3000/books")
 // render functions
 ///////////////////
 function renderHeader(store){
-  document.querySelector('#store-name').textContent = store.name
+  document.getElementById('store-name').textContent = store.name
 }
 
 function renderFooter(bookStore) {
-  document.querySelector('#address').textContent = bookStore.address;
-  document.querySelector('#number').textContent = bookStore.number;
-  document.querySelector('#store').textContent = bookStore.location;
+  document.getElementById('address').textContent = bookStore.address;
+  document.getElementById('number').textContent = bookStore.number;
+  document.getElementById('store').textContent = bookStore.location;
 }
 
 // adds options to a select tag that allows swapping between different stores
 function renderStoreSelectionOptions(stores) {
   // target the select tag
-  const storeSelector = document.querySelector('#store-selector');
+  const storeSelector = document.getElementById('store-selector');
   // clear out any currently visible options
   storeSelector.innerHTML = "";
   // add an option to the select tag for each store
@@ -59,7 +66,7 @@ function renderStoreSelectionOptions(stores) {
   })
 }
 
-const storeSelector = document.querySelector('#store-selector');
+const storeSelector = document.getElementById('store-selector');
 
 function addSelectOptionForStore(store) {
   const option = document.createElement('option');
@@ -102,6 +109,12 @@ function renderBook(book) {
   inventoryInput.className = 'inventory-input';
   inventoryInput.value = book.inventory;
   inventoryInput.min = 0;
+
+  inventoryInput.onchange = ( event ) => {
+    book.inventory = parseInt( inventoryInput.value )
+    updateBookInventory( book, pStock )
+  }
+  
   li.append(inventoryInput);
   
   const pStock = document.createElement('p');
@@ -124,16 +137,61 @@ function renderBook(book) {
   btn.textContent = 'Delete';
 
   btn.addEventListener('click', (e) => {
-    li.remove();
+    deleteBook( book.id, li )
   })
   li.append(btn);
-
+  
   bookList.append(li);
   return li;
 }
 
+
+// This function will handle deleting the book from the backend and remove it from the DOM!
+const deleteBook = ( bookId, li ) => {
+  const delRequest = {
+    method: 'DELETE'
+  }
+  
+  fetch( booksUrl + '/' + bookId, delRequest )
+  .then( r => {
+    if ( r.ok )
+      li.remove();
+  })
+}
+
+// This function will update our book's inventory count, then update the text on the DOM
+const updateBookInventory = ( book, pStock ) => {
+
+  const patchRequest = {
+    method: 'PATCH',
+    headers: {
+      'content-type': 'application/json',
+      'accepts': 'application/json'
+    },
+    // body: JSON.stringify( book )
+    body: JSON.stringify({
+      inventory: book.inventory
+    })
+  }
+
+  fetch( booksUrl + '/' + book.id, patchRequest )
+  .then( r => r.json() )
+  .then( updatedBookData => {
+    if (updatedBookData.inventory === 0) {
+      pStock.textContent = "Out of stock";
+    } else if (updatedBookData.inventory < 3) {
+      pStock.textContent = "Only a few left!";
+    } else {
+      pStock.textContent = "In stock"
+    }
+  })
+
+
+
+}
+
 function renderError(error) {
-  const main = document.querySelector('main');
+  const main = document.getElementById('ain');
   const errorDiv = document.createElement('div');
   errorDiv.className = 'error';
   if (error.message === "Failed to fetch") {
@@ -223,7 +281,7 @@ storeForm.addEventListener('submit', (e) => {
 })
 
 editStoreButton.addEventListener('click', (e) => {
-  const selectedStoreId = document.querySelector('#store-selector').value;
+  const selectedStoreId = document.getElementById('store-selector').value;
   storeEditMode = true;
   getJSON(`http://localhost:3000/stores/${selectedStoreId}`)
     .then(populateStoreEditForm)
@@ -273,5 +331,5 @@ function hideStoreForm() {
 function showStoreForm() {
   storeForm.classList.remove('collapsed');
   toggleStoreFormButton.textContent = "Hide Store form";
-  storeForm.querySelector('[type="submit"]').value = storeEditMode ? "SAVE STORE" : "ADD STORE";
+  storeForm.getElementById('type="submit"]').value = storeEditMode ? "SAVE STORE" : "ADD STORE";
 }
