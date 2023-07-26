@@ -3,6 +3,7 @@
 // 1) Fetch our data from server
 // 2) Render data to the page
 // 3) Hook up event listeners
+// 4) Make event listeners manipulate the page
 
 const baseUrl = 'http://localhost:3000'
 const booksUrl = baseUrl + '/books'
